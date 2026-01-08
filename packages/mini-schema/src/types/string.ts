@@ -1,4 +1,8 @@
-import type { ErrorMessageOptions, ParseContext, ParseResult } from '../errors/types';
+import type {
+  ErrorMessageOptions,
+  ParseContext,
+  ParseResult,
+} from "../errors/types";
 import {
   type CurrencyOptions,
   PATTERNS,
@@ -8,19 +12,19 @@ import {
   isValidCPF,
   isValidCurrency,
   isValidPhone,
-} from '../validators';
-import { BaseType } from './base';
+} from "../validators";
+import { BaseType } from "./base";
 
 type StringFormat =
-  | 'email'
-  | 'uuid'
-  | 'date'
-  | 'datetime'
-  | 'cep'
-  | 'cpf'
-  | 'cnpj'
-  | 'currency'
-  | 'phone';
+  | "email"
+  | "uuid"
+  | "date"
+  | "datetime"
+  | "cep"
+  | "cpf"
+  | "cnpj"
+  | "currency"
+  | "phone";
 
 interface StringTypeOptions {
   minLength?: number | undefined;
@@ -30,6 +34,7 @@ interface StringTypeOptions {
   customValidators: Array<{
     validate: (value: string) => boolean;
     message?: string | undefined;
+    format?: StringFormat | undefined;
   }>;
   customMessages: {
     min?: string | undefined;
@@ -54,22 +59,23 @@ export class StringType extends BaseType<string> {
   }
 
   _parse(value: unknown, ctx: ParseContext): ParseResult<string> {
-    if (typeof value !== 'string') {
+    if (typeof value !== "string") {
       return this._createError(ctx, {
-        code: 'invalid_type',
-        expected: 'string',
-        received: value === null ? 'null' : typeof value,
+        code: "invalid_type",
+        expected: "string",
+        received: value === null ? "null" : typeof value,
       });
     }
 
-    const { minLength, maxLength, pattern, customValidators, customMessages } = this.options;
+    const { minLength, maxLength, pattern, customValidators, customMessages } =
+      this.options;
 
     // Check min length
     if (minLength !== undefined && value.length < minLength) {
       return this._createError(ctx, {
-        code: 'too_small',
+        code: "too_small",
         minimum: minLength,
-        expected: 'string',
+        expected: "string",
         message: customMessages.min,
       });
     }
@@ -77,9 +83,9 @@ export class StringType extends BaseType<string> {
     // Check max length
     if (maxLength !== undefined && value.length > maxLength) {
       return this._createError(ctx, {
-        code: 'too_big',
+        code: "too_big",
         maximum: maxLength,
-        expected: 'string',
+        expected: "string",
         message: customMessages.max,
       });
     }
@@ -87,8 +93,8 @@ export class StringType extends BaseType<string> {
     // Check pattern
     if (pattern && !pattern.test(value)) {
       return this._createError(ctx, {
-        code: 'invalid_string',
-        expected: this.options.format ?? 'pattern',
+        code: "invalid_string",
+        expected: this.options.format ?? "pattern",
         message: customMessages.pattern,
       });
     }
@@ -96,8 +102,15 @@ export class StringType extends BaseType<string> {
     // Run custom validators
     for (const validator of customValidators) {
       if (!validator.validate(value)) {
+        // Use invalid_string for format validators, custom for others
+        if (validator.format) {
+          return this._createError(ctx, {
+            code: "invalid_string",
+            expected: validator.format,
+          });
+        }
         return this._createError(ctx, {
-          code: 'custom',
+          code: "custom",
           message: validator.message,
         });
       }
@@ -165,7 +178,7 @@ export class StringType extends BaseType<string> {
    */
   email(opts?: ErrorMessageOptions): StringType {
     const clone = this.pattern(PATTERNS.email, opts);
-    clone.options.format = 'email';
+    clone.options.format = "email";
     return clone;
   }
 
@@ -174,7 +187,7 @@ export class StringType extends BaseType<string> {
    */
   uuid(opts?: ErrorMessageOptions): StringType {
     const clone = this.pattern(PATTERNS.uuid, opts);
-    clone.options.format = 'uuid';
+    clone.options.format = "uuid";
     return clone;
   }
 
@@ -183,7 +196,7 @@ export class StringType extends BaseType<string> {
    */
   date(opts?: ErrorMessageOptions): StringType {
     const clone = this.pattern(PATTERNS.date, opts);
-    clone.options.format = 'date';
+    clone.options.format = "date";
     return clone;
   }
 
@@ -192,7 +205,7 @@ export class StringType extends BaseType<string> {
    */
   datetime(opts?: ErrorMessageOptions): StringType {
     const clone = this.pattern(PATTERNS.datetime, opts);
-    clone.options.format = 'datetime';
+    clone.options.format = "datetime";
     return clone;
   }
 
@@ -206,7 +219,10 @@ export class StringType extends BaseType<string> {
   /**
    * Add custom validator
    */
-  refine(validate: (value: string) => boolean, opts?: ErrorMessageOptions): StringType {
+  refine(
+    validate: (value: string) => boolean,
+    opts?: ErrorMessageOptions,
+  ): StringType {
     const clone = this._clone();
     clone.options.customValidators.push({
       validate,
@@ -219,12 +235,12 @@ export class StringType extends BaseType<string> {
    * Validate as Brazilian CPF (Cadastro de Pessoas Físicas)
    * Accepts both formatted (XXX.XXX.XXX-XX) and unformatted (XXXXXXXXXXX) CPFs
    */
-  cpf(opts?: ErrorMessageOptions): StringType {
+  cpf(): StringType {
     const clone = this._clone();
-    clone.options.format = 'cpf';
+    clone.options.format = "cpf";
     clone.options.customValidators.push({
       validate: isValidCPF,
-      message: opts?.message ?? 'Invalid CPF',
+      format: "cpf",
     });
     return clone;
   }
@@ -233,12 +249,12 @@ export class StringType extends BaseType<string> {
    * Validate as Brazilian CNPJ (Cadastro Nacional da Pessoa Jurídica)
    * Accepts both formatted (XX.XXX.XXX/XXXX-XX) and unformatted (XXXXXXXXXXXXXX) CNPJs
    */
-  cnpj(opts?: ErrorMessageOptions): StringType {
+  cnpj(): StringType {
     const clone = this._clone();
-    clone.options.format = 'cnpj';
+    clone.options.format = "cnpj";
     clone.options.customValidators.push({
       validate: isValidCNPJ,
-      message: opts?.message ?? 'Invalid CNPJ',
+      format: "cnpj",
     });
     return clone;
   }
@@ -247,12 +263,12 @@ export class StringType extends BaseType<string> {
    * Validate as Brazilian CEP (Código de Endereçamento Postal)
    * Accepts both formatted (XXXXX-XXX) and unformatted (XXXXXXXX) CEPs
    */
-  cep(opts?: ErrorMessageOptions): StringType {
+  cep(): StringType {
     const clone = this._clone();
-    clone.options.format = 'cep';
+    clone.options.format = "cep";
     clone.options.customValidators.push({
       validate: isValidCEP,
-      message: opts?.message ?? 'Invalid CEP',
+      format: "cep",
     });
     return clone;
   }
@@ -261,12 +277,12 @@ export class StringType extends BaseType<string> {
    * Validate as a currency string
    * Supports various formats based on locale (e.g., "$1,234.56", "R$ 1.234,56")
    */
-  currency(currencyOpts?: CurrencyOptions & ErrorMessageOptions): StringType {
+  currency(currencyOpts?: CurrencyOptions): StringType {
     const clone = this._clone();
-    clone.options.format = 'currency';
+    clone.options.format = "currency";
     clone.options.customValidators.push({
       validate: (value: string) => isValidCurrency(value, currencyOpts),
-      message: currencyOpts?.message ?? 'Invalid currency format',
+      format: "currency",
     });
     return clone;
   }
@@ -275,12 +291,12 @@ export class StringType extends BaseType<string> {
    * Validate as a phone number using libphonenumber-js
    * Supports international formats and country-specific validation
    */
-  phone(phoneOpts?: PhoneOptions & ErrorMessageOptions): StringType {
+  phone(phoneOpts?: PhoneOptions): StringType {
     const clone = this._clone();
-    clone.options.format = 'phone';
+    clone.options.format = "phone";
     clone.options.customValidators.push({
       validate: (value: string) => isValidPhone(value, phoneOpts),
-      message: phoneOpts?.message ?? 'Invalid phone number',
+      format: "phone",
     });
     return clone;
   }

@@ -34,9 +34,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build packages
-        run: |
-          pnpm --filter mini-schema build
-          pnpm --filter mini-schema-br build
+        run: pnpm --filter mini-schema build
 
       - name: Lint
         run: pnpm biome check packages/
@@ -44,11 +42,8 @@ jobs:
       - name: Typecheck
         run: pnpm --filter mini-schema typecheck
 
-      - name: Test mini-schema
+      - name: Test
         run: pnpm --filter mini-schema test
-
-      - name: Test mini-schema-br
-        run: pnpm --filter mini-schema-br test
 
   # Optional: Add coverage reporting
   coverage:

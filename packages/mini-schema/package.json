@@ -17,6 +17,14 @@
     "./validators": {
       "types": "./dist/validators/index.d.ts",
       "import": "./dist/validators/index.js"
+    },
+    "./locale": {
+      "types": "./dist/locale/index.d.ts",
+      "import": "./dist/locale/index.js"
+    },
+    "./locale/pt-BR": {
+      "types": "./dist/locale/pt-BR.d.ts",
+      "import": "./dist/locale/pt-BR.js"
     }
   },
   "files": [

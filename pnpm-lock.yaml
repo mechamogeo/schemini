@@ -31,15 +31,6 @@ importers:
         specifier: ^3.2.4
         version: 3.2.4
 
-  packages/mini-schema-br:
-    devDependencies:
-      mini-schema:
-        specifier: workspace:*
-        version: link:../mini-schema
-      vitest:
-        specifier: ^3.2.4
-        version: 3.2.4
-
 packages:
 
   '@biomejs/biome@1.9.4':

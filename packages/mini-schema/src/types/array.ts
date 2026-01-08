@@ -1,6 +1,6 @@
-import type { ValidationError } from '../errors';
-import type { ParseContext, ParseResult } from '../errors/types';
-import { BaseType } from './base';
+import type { ValidationError } from "../errors";
+import type { ParseContext, ParseResult } from "../errors/types";
+import { BaseType } from "./base";
 
 /**
  * Options for length validators
@@ -48,42 +48,42 @@ export class ArrayType<T> extends BaseType<T[]> {
     // Check if value is an array
     if (!Array.isArray(value)) {
       return this._createError(ctx, {
-        code: 'invalid_type',
-        expected: 'array',
-        received: value === null ? 'null' : typeof value,
+        code: "invalid_type",
+        expected: "array",
+        received: value === null ? "null" : typeof value,
       });
     }
 
     // Check exact length
     if (this._exactLength !== undefined && value.length !== this._exactLength) {
       return this._createError(ctx, {
-        code: 'too_small',
+        code: "too_small",
         minimum: this._exactLength,
         inclusive: true,
-        expected: 'array',
-        message: this._lengthMessage ?? `Array must have exactly ${this._exactLength} element(s)`,
+        expected: "array",
+        message: this._lengthMessage,
       });
     }
 
     // Check min length
     if (this._minLength !== undefined && value.length < this._minLength) {
       return this._createError(ctx, {
-        code: 'too_small',
+        code: "too_small",
         minimum: this._minLength,
         inclusive: true,
-        expected: 'array',
-        message: this._minMessage ?? `Array must have at least ${this._minLength} element(s)`,
+        expected: "array",
+        message: this._minMessage,
       });
     }
 
     // Check max length
     if (this._maxLength !== undefined && value.length > this._maxLength) {
       return this._createError(ctx, {
-        code: 'too_big',
+        code: "too_big",
         maximum: this._maxLength,
         inclusive: true,
-        expected: 'array',
-        message: this._maxMessage ?? `Array must have at most ${this._maxLength} element(s)`,
+        expected: "array",
+        message: this._maxMessage,
       });
     }
 

@@ -15,7 +15,7 @@ A lightweight, TypeScript-first schema validation library with JSON Schema suppo
 - **Brazilian validators** - CPF, CNPJ, CEP validation built-in
 - **Coercion** - Automatic type conversion for form data
 - **Extensible** - Custom validators with `refine()` and `transform()`
-- **i18n ready** - Customizable error messages with `@mini-schema/br` for Portuguese
+- **i18n ready** - Built-in locale support (like date-fns)
 
 ## Installation
 
@@ -25,12 +25,6 @@ npm install mini-schema
 pnpm add mini-schema
 # or
 yarn add mini-schema
-```
-
-For Portuguese error messages:
-
-```bash
-npm install @mini-schema/br
 ```
 
 ## Quick Start
@@ -261,18 +255,26 @@ if (!result.success) {
 
 ## Internationalization (i18n)
 
+Locales are built-in, just like date-fns:
+
 ### Using Portuguese (Brazilian) Messages
 
 ```typescript
 import { s, setErrorMap } from "mini-schema";
-import { ptBRErrorMap } from "@mini-schema/br";
+import { ptBR } from "mini-schema/locale/pt-BR";
 
 // Set globally
-setErrorMap(ptBRErrorMap);
+setErrorMap(ptBR);
 
 // Now all validation errors are in Portuguese
 const result = s.string().email().safeParse("invalid");
-// result.error.issues[0].message → "Formato de email inválido"
+// result.error.issues[0].message → "E-mail inválido"
+```
+
+Or import all locales:
+
+```typescript
+import { ptBR } from "mini-schema/locale";
 ```
 
 ### Custom Error Messages
