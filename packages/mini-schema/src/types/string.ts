@@ -1,8 +1,15 @@
 import type { ErrorMessageOptions, ParseContext, ParseResult } from '../errors/types';
-import { PATTERNS, isValidCEP, isValidCNPJ, isValidCPF } from '../validators';
+import {
+  type CurrencyOptions,
+  PATTERNS,
+  isValidCEP,
+  isValidCNPJ,
+  isValidCPF,
+  isValidCurrency,
+} from '../validators';
 import { BaseType } from './base';
 
-type StringFormat = 'email' | 'uuid' | 'date' | 'datetime' | 'cep' | 'cpf' | 'cnpj';
+type StringFormat = 'email' | 'uuid' | 'date' | 'datetime' | 'cep' | 'cpf' | 'cnpj' | 'currency';
 
 interface StringTypeOptions {
   minLength?: number | undefined;
@@ -235,6 +242,20 @@ export class StringType extends BaseType<string> {
     clone.options.customValidators.push({
       validate: isValidCEP,
       message: opts?.message ?? 'Invalid CEP',
+    });
+    return clone;
+  }
+
+  /**
+   * Validate as a currency string
+   * Supports various formats based on locale (e.g., "$1,234.56", "R$ 1.234,56")
+   */
+  currency(currencyOpts?: CurrencyOptions & ErrorMessageOptions): StringType {
+    const clone = this._clone();
+    clone.options.format = 'currency';
+    clone.options.customValidators.push({
+      validate: (value: string) => isValidCurrency(value, currencyOpts),
+      message: currencyOpts?.message ?? 'Invalid currency format',
     });
     return clone;
   }
