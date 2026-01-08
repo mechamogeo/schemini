@@ -28,10 +28,24 @@
     "portuguese",
     "pt-BR",
     "i18n",
-    "localization"
+    "localization",
+    "brazilian",
+    "error-messages"
   ],
-  "author": "mechamogeo",
+  "author": {
+    "name": "Geovani Perez França",
+    "email": "hi@geovani.dev",
+    "url": "https://github.com/mechamogeo"
+  },
   "license": "MIT",
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/mechamogeo"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/mechamogeo/mini-schema.git",
@@ -45,7 +59,7 @@
     "node": ">=20.0.0"
   },
   "peerDependencies": {
-    "mini-schema": "workspace:*"
+    "mini-schema": ">=0.1.0"
   },
   "devDependencies": {
     "mini-schema": "workspace:*",

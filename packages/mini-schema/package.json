@@ -38,10 +38,29 @@
     "typescript",
     "json-schema",
     "type-inference",
-    "runtime-validation"
+    "runtime-validation",
+    "zod",
+    "validator",
+    "parse",
+    "type-safe",
+    "brazilian",
+    "cpf",
+    "cnpj"
   ],
-  "author": "mechamogeo",
+  "author": {
+    "name": "Geovani Perez França",
+    "email": "hi@geovani.dev",
+    "url": "https://github.com/mechamogeo"
+  },
   "license": "MIT",
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/mechamogeo"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/mechamogeo/mini-schema.git"
