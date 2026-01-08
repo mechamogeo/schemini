@@ -1,8 +1,8 @@
 # Examples
 
-This directory contains example code demonstrating how to use `mini-schema`.
+This directory contains example code demonstrating how to use `@schemini/core`.
 
-> **Note**: These examples show the import style after installing `mini-schema` from npm.
+> **Note**: These examples show the import style after installing `@schemini/core` from npm.
 > They are for documentation purposes and won't run directly in this monorepo.
 
 ## Examples
@@ -50,8 +50,8 @@ API validation patterns including:
 
 JSON Schema integration including:
 
-- Converting mini-schema to JSON Schema
-- Converting JSON Schema to mini-schema
+- Converting schemini to JSON Schema
+- Converting JSON Schema to schemini
 - Round-trip conversion
 - OpenAPI integration
 - Schema documentation generation
@@ -70,10 +70,10 @@ To run these examples, you would:
    npm init -y
    ```
 
-2. Install mini-schema:
+2. Install @schemini/core:
 
    ```bash
-   npm install mini-schema
+   npm install @schemini/core
    ```
 
 3. Copy an example file and run it:

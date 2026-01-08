@@ -1,11 +1,11 @@
 /**
  * Form Validation Examples
  *
- * Demonstrates how to use mini-schema for validating form data,
+ * Demonstrates how to use @schemini/core for validating form data,
  * including coercion for converting string inputs to proper types.
  */
 
-import { s, ValidationError } from "mini-schema";
+import { s, ValidationError } from "@schemini/core";
 
 // ============================================================================
 // 1. Registration Form with Coercion

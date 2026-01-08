@@ -1,5 +1,5 @@
 {
-  "name": "mini-schema",
+  "name": "@schemini/core",
   "version": "0.1.0",
   "description": "TypeScript-first schema validation library with JSON Schema support",
   "type": "module",
@@ -17,14 +17,6 @@
     "./validators": {
       "types": "./dist/validators/index.d.ts",
       "import": "./dist/validators/index.js"
-    },
-    "./locale": {
-      "types": "./dist/locale/index.d.ts",
-      "import": "./dist/locale/index.js"
-    },
-    "./locale/pt-BR": {
-      "types": "./dist/locale/pt-BR.d.ts",
-      "import": "./dist/locale/pt-BR.js"
     }
   },
   "files": [
@@ -53,7 +45,8 @@
     "type-safe",
     "brazilian",
     "cpf",
-    "cnpj"
+    "cnpj",
+    "schemini"
   ],
   "author": {
     "name": "Geovani Perez França",
@@ -71,12 +64,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mechamogeo/mini-schema.git"
+    "url": "git+https://github.com/mechamogeo/schemini.git",
+    "directory": "packages/core"
   },
   "bugs": {
-    "url": "https://github.com/mechamogeo/mini-schema/issues"
+    "url": "https://github.com/mechamogeo/schemini/issues"
   },
-  "homepage": "https://github.com/mechamogeo/mini-schema#readme",
+  "homepage": "https://github.com/mechamogeo/schemini#readme",
   "engines": {
     "node": ">=20.0.0"
   },

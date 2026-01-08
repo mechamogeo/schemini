@@ -1,0 +1,76 @@
+{
+  "name": "@schemini/locale",
+  "version": "0.1.0",
+  "description": "Locale files for @schemini/core schema validation library",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./pt-BR": {
+      "types": "./dist/pt-BR.d.ts",
+      "import": "./dist/pt-BR.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "build:tsc": "tsc",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "schemini",
+    "locale",
+    "i18n",
+    "validation",
+    "portuguese",
+    "pt-BR",
+    "brazilian"
+  ],
+  "author": {
+    "name": "Geovani Perez França",
+    "email": "hi@geovani.dev",
+    "url": "https://github.com/mechamogeo"
+  },
+  "license": "MIT",
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/mechamogeo"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mechamogeo/schemini.git",
+    "directory": "packages/locale"
+  },
+  "bugs": {
+    "url": "https://github.com/mechamogeo/schemini/issues"
+  },
+  "homepage": "https://github.com/mechamogeo/schemini#readme",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "devDependencies": {
+    "@schemini/core": "workspace:*",
+    "tsup": "^8.5.1"
+  },
+  "peerDependencies": {
+    "@schemini/core": ">=0.1.0",
+    "typescript": ">=5.0.0"
+  },
+  "peerDependenciesMeta": {
+    "typescript": {
+      "optional": true
+    }
+  }
+}

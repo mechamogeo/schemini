@@ -1,10 +1,15 @@
 /**
  * JSON Schema Examples
  *
- * Demonstrates bidirectional conversion between mini-schema and JSON Schema.
+ * Demonstrates bidirectional conversion between @schemini/core and JSON Schema.
  */
 
-import { s, toJsonSchema, fromJsonSchema, type JsonSchema } from "mini-schema";
+import {
+  s,
+  toJsonSchema,
+  fromJsonSchema,
+  type JsonSchema,
+} from "@schemini/core";
 
 // ============================================================================
 // 1. Converting mini-schema to JSON Schema

@@ -1,10 +1,10 @@
 /**
  * Basic Usage Examples
  *
- * This file demonstrates the fundamental usage patterns of mini-schema.
+ * This file demonstrates the fundamental usage patterns of @schemini/core.
  */
 
-import { s, ValidationError } from "mini-schema";
+import { s, ValidationError } from "@schemini/core";
 
 // ============================================================================
 // 1. Primitive Types

@@ -1,10 +1,10 @@
 /**
  * API Validation Examples
  *
- * Demonstrates how to use mini-schema for validating API requests and responses.
+ * Demonstrates how to use @schemini/core for validating API requests and responses.
  */
 
-import { s, ValidationError } from "mini-schema";
+import { s, ValidationError } from "@schemini/core";
 
 // ============================================================================
 // 1. REST API Request/Response Schemas

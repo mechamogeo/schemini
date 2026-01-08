@@ -1,11 +1,18 @@
-# mini-schema
+# schemini
 
-[![CI](https://github.com/mechamogeo/mini-schema/actions/workflows/ci.yml/badge.svg)](https://github.com/mechamogeo/mini-schema/actions/workflows/ci.yml)
-[![npm version](https://badge.fury.io/js/mini-schema.svg)](https://www.npmjs.com/package/mini-schema)
+[![CI](https://github.com/mechamogeo/schemini/actions/workflows/ci.yml/badge.svg)](https://github.com/mechamogeo/schemini/actions/workflows/ci.yml)
+[![npm version](https://badge.fury.io/js/@schemini/core.svg)](https://www.npmjs.com/package/@schemini/core)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 A lightweight, TypeScript-first schema validation library with JSON Schema support. Built for type safety, developer experience, and educational purposes.
+
+## Packages
+
+| Package                               | Description                    |
+| ------------------------------------- | ------------------------------ |
+| [@schemini/core](./packages/core)     | Core schema validation library |
+| [@schemini/locale](./packages/locale) | Locale files for i18n support  |
 
 ## Features
 
@@ -15,22 +22,28 @@ A lightweight, TypeScript-first schema validation library with JSON Schema suppo
 - **Brazilian validators** - CPF, CNPJ, CEP validation built-in
 - **Coercion** - Automatic type conversion for form data
 - **Extensible** - Custom validators with `refine()` and `transform()`
-- **i18n ready** - Built-in locale support (like date-fns)
+- **i18n ready** - Separate locale package for internationalization
 
 ## Installation
 
 ```bash
-npm install mini-schema
+npm install @schemini/core
 # or
-pnpm add mini-schema
+pnpm add @schemini/core
 # or
-yarn add mini-schema
+yarn add @schemini/core
+```
+
+For internationalization:
+
+```bash
+npm install @schemini/locale
 ```
 
 ## Quick Start
 
 ```typescript
-import { s } from "mini-schema";
+import { s } from "@schemini/core";
 
 // Define a schema
 const userSchema = s.object({
@@ -192,7 +205,7 @@ const formSchema = s.object({
 ### Convert to JSON Schema
 
 ```typescript
-import { s } from "mini-schema";
+import { s } from "@schemini/core";
 
 const userSchema = s.object({
   name: s.string().min(1),
@@ -232,7 +245,7 @@ const result = schema.parse({ title: "Hello", count: 42 });
 ## Error Handling
 
 ```typescript
-import { s, ValidationError } from "mini-schema";
+import { s, ValidationError } from "@schemini/core";
 
 try {
   userSchema.parse(invalidData);
@@ -255,13 +268,17 @@ if (!result.success) {
 
 ## Internationalization (i18n)
 
-Locales are built-in, just like date-fns:
+Install the locale package:
+
+```bash
+npm install @schemini/locale
+```
 
 ### Using Portuguese (Brazilian) Messages
 
 ```typescript
-import { s, setErrorMap } from "mini-schema";
-import { ptBR } from "mini-schema/locale/pt-BR";
+import { s, setErrorMap } from "@schemini/core";
+import { ptBR } from "@schemini/locale/pt-BR";
 
 // Set globally
 setErrorMap(ptBR);
@@ -274,15 +291,15 @@ const result = s.string().email().safeParse("invalid");
 Or import all locales:
 
 ```typescript
-import { ptBR } from "mini-schema/locale";
+import { ptBR } from "@schemini/locale";
 ```
 
 ### Custom Error Messages
 
 ```typescript
-import { setErrorMap, type ErrorMapFn } from "mini-schema";
+import { setErrorMap, type ErrorMapFn } from "@schemini/core";
 
-const customErrorMap: ErrorMapFn = (issue, ctx) => {
+const customErrorMap: ErrorMapFn = (issue) => {
   switch (issue.code) {
     case "invalid_type":
       return `Expected ${issue.expected}, got ${issue.received}`;
@@ -290,7 +307,7 @@ const customErrorMap: ErrorMapFn = (issue, ctx) => {
       return `Must be at least ${issue.minimum}`;
     // ... handle other codes
     default:
-      return ctx.defaultMessage;
+      return "Validation failed";
   }
 };
 
@@ -299,17 +316,17 @@ setErrorMap(customErrorMap);
 
 ## Comparison with Zod
 
-| Feature              | mini-schema | Zod    |
-| -------------------- | ----------- | ------ |
-| Type inference       | Yes         | Yes    |
-| JSON Schema support  | Built-in    | Plugin |
-| Brazilian validators | Built-in    | No     |
-| Bundle size          | ~15KB       | ~50KB  |
-| Async validation     | No          | Yes    |
-| Recursive schemas    | No          | Yes    |
-| Discriminated unions | No          | Yes    |
+| Feature              | schemini | Zod    |
+| -------------------- | -------- | ------ |
+| Type inference       | Yes      | Yes    |
+| JSON Schema support  | Built-in | Plugin |
+| Brazilian validators | Built-in | No     |
+| Bundle size          | ~15KB    | ~50KB  |
+| Async validation     | No       | Yes    |
+| Recursive schemas    | No       | Yes    |
+| Discriminated unions | No       | Yes    |
 
-mini-schema is designed to be a lighter alternative for common use cases while providing unique features like Brazilian validators and built-in JSON Schema support.
+schemini is designed to be a lighter alternative for common use cases while providing unique features like Brazilian validators and built-in JSON Schema support.
 
 ## Standalone Validators
 
@@ -323,7 +340,7 @@ import {
   isValidPhone,
   parseCurrency,
   formatPhone,
-} from "mini-schema/validators";
+} from "@schemini/core/validators";
 
 isValidCPF("529.982.247-25"); // true
 isValidCNPJ("11.222.333/0001-81"); // true
@@ -335,7 +352,7 @@ formatPhone("+5511999999999", "NATIONAL"); // '(11) 99999-9999'
 
 ## TypeScript
 
-mini-schema requires TypeScript 5.0+ for best type inference. Recommended tsconfig:
+schemini requires TypeScript 5.0+ for best type inference. Recommended tsconfig:
 
 ```json
 {
