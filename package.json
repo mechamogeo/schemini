@@ -17,7 +17,8 @@
     "typecheck": "pnpm -r run typecheck",
     "changeset": "changeset",
     "version": "changeset version",
-    "release": "pnpm build && changeset publish"
+    "release": "pnpm build && changeset publish",
+    "release:provenance": "node scripts/publish-with-provenance.mjs"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
