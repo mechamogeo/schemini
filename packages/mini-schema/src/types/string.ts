@@ -1,8 +1,8 @@
 import type { ErrorMessageOptions, ParseContext, ParseResult } from '../errors/types';
-import { PATTERNS } from '../validators/patterns';
+import { PATTERNS, isValidCEP, isValidCNPJ, isValidCPF } from '../validators';
 import { BaseType } from './base';
 
-type StringFormat = 'email' | 'uuid' | 'date' | 'datetime' | 'cep';
+type StringFormat = 'email' | 'uuid' | 'date' | 'datetime' | 'cep' | 'cpf' | 'cnpj';
 
 interface StringTypeOptions {
   minLength?: number | undefined;
@@ -193,6 +193,48 @@ export class StringType extends BaseType<string> {
     clone.options.customValidators.push({
       validate,
       message: opts?.message,
+    });
+    return clone;
+  }
+
+  /**
+   * Validate as Brazilian CPF (Cadastro de Pessoas Físicas)
+   * Accepts both formatted (XXX.XXX.XXX-XX) and unformatted (XXXXXXXXXXX) CPFs
+   */
+  cpf(opts?: ErrorMessageOptions): StringType {
+    const clone = this._clone();
+    clone.options.format = 'cpf';
+    clone.options.customValidators.push({
+      validate: isValidCPF,
+      message: opts?.message ?? 'Invalid CPF',
+    });
+    return clone;
+  }
+
+  /**
+   * Validate as Brazilian CNPJ (Cadastro Nacional da Pessoa Jurídica)
+   * Accepts both formatted (XX.XXX.XXX/XXXX-XX) and unformatted (XXXXXXXXXXXXXX) CNPJs
+   */
+  cnpj(opts?: ErrorMessageOptions): StringType {
+    const clone = this._clone();
+    clone.options.format = 'cnpj';
+    clone.options.customValidators.push({
+      validate: isValidCNPJ,
+      message: opts?.message ?? 'Invalid CNPJ',
+    });
+    return clone;
+  }
+
+  /**
+   * Validate as Brazilian CEP (Código de Endereçamento Postal)
+   * Accepts both formatted (XXXXX-XXX) and unformatted (XXXXXXXX) CEPs
+   */
+  cep(opts?: ErrorMessageOptions): StringType {
+    const clone = this._clone();
+    clone.options.format = 'cep';
+    clone.options.customValidators.push({
+      validate: isValidCEP,
+      message: opts?.message ?? 'Invalid CEP',
     });
     return clone;
   }
