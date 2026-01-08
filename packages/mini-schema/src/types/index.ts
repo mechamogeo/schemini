@@ -20,3 +20,9 @@ export {
   CoercedNumberType,
   CoercedBooleanType,
 } from './coerce';
+export type {
+  Infer,
+  InferInput,
+  InferTuple,
+  InferUnion,
+} from './infer';

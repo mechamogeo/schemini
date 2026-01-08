@@ -3,6 +3,7 @@ import type { BaseType } from './types/base';
 import { BooleanType } from './types/boolean';
 import { CoercedBooleanType, CoercedNumberType, CoercedStringType } from './types/coerce';
 import { EnumType } from './types/enum';
+import type { Infer, InferInput } from './types/infer';
 import { LiteralType, type LiteralValue } from './types/literal';
 import { NumberType } from './types/number';
 import { ObjectType, type Shape } from './types/object';
@@ -80,5 +81,24 @@ export const s = {
    */
   coerce,
 } as const;
+
+/**
+ * Infer the output type from a schema
+ *
+ * @example
+ * const userSchema = s.object({
+ *   name: s.string(),
+ *   age: s.number(),
+ * });
+ *
+ * type User = s.infer<typeof userSchema>;
+ * // { name: string; age: number }
+ */
+export declare namespace s {
+  // biome-ignore lint/suspicious/noExplicitAny: Required for type inference
+  export type infer<T extends BaseType<any>> = Infer<T>;
+  // biome-ignore lint/suspicious/noExplicitAny: Required for type inference
+  export type input<T extends BaseType<any>> = InferInput<T>;
+}
 
 export { s as schema };

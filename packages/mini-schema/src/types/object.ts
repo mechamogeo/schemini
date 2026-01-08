@@ -10,17 +10,19 @@ export type Shape = Record<string, BaseType<any>>;
 
 /**
  * Infer the output type from a shape
+ * Handles required, optional, and default fields correctly with exactOptionalPropertyTypes
  */
 export type InferShape<T extends Shape> = {
+  // Required fields (not OptionalType or DefaultType)
   [K in keyof T as T[K] extends OptionalType<unknown> | DefaultType<unknown>
     ? never
     : K]: T[K]['_output'];
 } & {
-  [K in keyof T as T[K] extends OptionalType<unknown>
-    ? K
-    : T[K] extends DefaultType<unknown>
-      ? K
-      : never]?: T[K]['_output'];
+  // Optional fields (OptionalType) - marked with ? and | undefined for exactOptionalPropertyTypes
+  [K in keyof T as T[K] extends OptionalType<unknown> ? K : never]?: T[K]['_output'] | undefined;
+} & {
+  // Default fields - optional in input but always present in output
+  [K in keyof T as T[K] extends DefaultType<unknown> ? K : never]?: T[K]['_output'] | undefined;
 };
 
 /**
