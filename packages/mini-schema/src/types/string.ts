@@ -2,14 +2,25 @@ import type { ErrorMessageOptions, ParseContext, ParseResult } from '../errors/t
 import {
   type CurrencyOptions,
   PATTERNS,
+  type PhoneOptions,
   isValidCEP,
   isValidCNPJ,
   isValidCPF,
   isValidCurrency,
+  isValidPhone,
 } from '../validators';
 import { BaseType } from './base';
 
-type StringFormat = 'email' | 'uuid' | 'date' | 'datetime' | 'cep' | 'cpf' | 'cnpj' | 'currency';
+type StringFormat =
+  | 'email'
+  | 'uuid'
+  | 'date'
+  | 'datetime'
+  | 'cep'
+  | 'cpf'
+  | 'cnpj'
+  | 'currency'
+  | 'phone';
 
 interface StringTypeOptions {
   minLength?: number | undefined;
@@ -256,6 +267,20 @@ export class StringType extends BaseType<string> {
     clone.options.customValidators.push({
       validate: (value: string) => isValidCurrency(value, currencyOpts),
       message: currencyOpts?.message ?? 'Invalid currency format',
+    });
+    return clone;
+  }
+
+  /**
+   * Validate as a phone number using libphonenumber-js
+   * Supports international formats and country-specific validation
+   */
+  phone(phoneOpts?: PhoneOptions & ErrorMessageOptions): StringType {
+    const clone = this._clone();
+    clone.options.format = 'phone';
+    clone.options.customValidators.push({
+      validate: (value: string) => isValidPhone(value, phoneOpts),
+      message: phoneOpts?.message ?? 'Invalid phone number',
     });
     return clone;
   }

@@ -58,5 +58,8 @@
     "typescript": {
       "optional": true
     }
+  },
+  "dependencies": {
+    "libphonenumber-js": "^1.12.33"
   }
 }
