@@ -12,13 +12,13 @@ import type {
  */
 interface CreateErrorOptions {
   code: IssueCode;
-  expected?: string;
-  received?: string;
-  minimum?: number;
-  maximum?: number;
-  inclusive?: boolean;
-  options?: string[];
-  message?: string;
+  expected?: string | undefined;
+  received?: string | undefined;
+  minimum?: number | undefined;
+  maximum?: number | undefined;
+  inclusive?: boolean | undefined;
+  options?: string[] | undefined;
+  message?: string | undefined;
 }
 
 /**
