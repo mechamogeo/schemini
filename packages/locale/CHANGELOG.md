@@ -1,5 +1,22 @@
 # @schemini/locale
 
+## 1.0.0
+
+### Minor Changes
+
+- [#2](https://github.com/mechamogeo/schemini/pull/2) [`74a319a`](https://github.com/mechamogeo/schemini/commit/74a319a13105b3c856204d63126a2d00a0b9c989) Thanks [@mechamogeo](https://github.com/mechamogeo)! - feat: restructure documentation and add GitHub Packages support
+
+  - Add schemini logo to assets
+  - Simplify READMEs for cleaner npm display
+  - Create comprehensive GitHub Wiki documentation
+  - Add GitHub Packages registry for dual distribution (npm + GitHub Packages)
+  - Update release workflow to publish to both registries
+
+### Patch Changes
+
+- Updated dependencies [[`74a319a`](https://github.com/mechamogeo/schemini/commit/74a319a13105b3c856204d63126a2d00a0b9c989)]:
+  - @schemini/core@1.0.0
+
 ## 0.1.1
 
 ### Patch Changes
