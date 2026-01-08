@@ -1,5 +1,5 @@
 {
-  "name": "mini-schema-br",
+  "name": "@mini-schema/br",
   "version": "0.1.0",
   "description": "Brazilian Portuguese (pt-BR) error messages for mini-schema",
   "type": "module",

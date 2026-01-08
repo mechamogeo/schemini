@@ -1,18 +1,18 @@
-# mini-schema-br
+# @mini-schema/br
 
 Brazilian Portuguese (pt-BR) error messages for [mini-schema](https://www.npmjs.com/package/mini-schema).
 
 ## Installation
 
 ```bash
-npm install mini-schema mini-schema-br
+npm install mini-schema @mini-schema/br
 ```
 
 ## Usage
 
 ```typescript
 import { s, setErrorMap } from "mini-schema";
-import { ptBRErrorMap } from "mini-schema-br";
+import { ptBRErrorMap } from "@mini-schema/br";
 
 // Set Portuguese error messages globally
 setErrorMap(ptBRErrorMap);
@@ -53,7 +53,7 @@ All mini-schema error codes are translated:
 ## Exports
 
 ```typescript
-import { ptBRErrorMap, portugueseErrorMap } from "mini-schema-br";
+import { ptBRErrorMap, portugueseErrorMap } from "@mini-schema/br";
 
 // Both are the same - use whichever you prefer
 setErrorMap(ptBRErrorMap);

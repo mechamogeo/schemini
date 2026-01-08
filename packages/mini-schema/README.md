@@ -15,7 +15,7 @@ A lightweight, TypeScript-first schema validation library with JSON Schema suppo
 - **Brazilian validators** - CPF, CNPJ, CEP validation built-in
 - **Coercion** - Automatic type conversion for form data
 - **Extensible** - Custom validators with `refine()` and `transform()`
-- **i18n ready** - Customizable error messages with `mini-schema-br` for Portuguese
+- **i18n ready** - Customizable error messages with `@mini-schema/br` for Portuguese
 
 ## Installation
 
@@ -30,7 +30,7 @@ yarn add mini-schema
 For Portuguese error messages:
 
 ```bash
-npm install mini-schema-br
+npm install @mini-schema/br
 ```
 
 ## Quick Start
@@ -265,7 +265,7 @@ if (!result.success) {
 
 ```typescript
 import { s, setErrorMap } from "mini-schema";
-import { ptBRErrorMap } from "mini-schema-br";
+import { ptBRErrorMap } from "@mini-schema/br";
 
 // Set globally
 setErrorMap(ptBRErrorMap);
