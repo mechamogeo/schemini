@@ -1,11 +1,5 @@
-import { ValidationError, getErrorMessage } from "../errors";
-import type {
-  ErrorMapFn,
-  Issue,
-  IssueCode,
-  ParseContext,
-  ParseResult,
-} from "../errors/types";
+import { ValidationError, getErrorMessage } from '../errors';
+import type { ErrorMapFn, Issue, IssueCode, ParseContext, ParseResult } from '../errors/types';
 
 /**
  * Options for creating an error issue
@@ -80,7 +74,7 @@ export abstract class BaseType<TOutput, TInput = TOutput> {
     const issue: Issue = {
       code: options.code,
       path: ctx.path,
-      message: "",
+      message: '',
       expected: options.expected,
       received: options.received,
       minimum: options.minimum,
@@ -145,9 +139,7 @@ export abstract class BaseType<TOutput, TInput = TOutput> {
   /**
    * Transform the output value
    */
-  transform<TNewOutput>(
-    fn: (value: TOutput) => TNewOutput,
-  ): TransformType<TOutput, TNewOutput> {
+  transform<TNewOutput>(fn: (value: TOutput) => TNewOutput): TransformType<TOutput, TNewOutput> {
     return new TransformType(this as unknown as BaseType<TOutput>, fn);
   }
 }
@@ -196,9 +188,7 @@ export class NullishType<T> extends BaseType<T | null | undefined> {
     if (value === undefined || value === null) {
       return { success: true, data: value as null | undefined };
     }
-    return this.innerType._parse(value, ctx) as ParseResult<
-      T | null | undefined
-    >;
+    return this.innerType._parse(value, ctx) as ParseResult<T | null | undefined>;
   }
 }
 
@@ -216,7 +206,7 @@ export class DefaultType<T> extends BaseType<T> {
   _parse(value: unknown, ctx: ParseContext): ParseResult<T> {
     if (value === undefined) {
       const resolved =
-        typeof this.defaultValue === "function"
+        typeof this.defaultValue === 'function'
           ? (this.defaultValue as () => T)()
           : this.defaultValue;
       return { success: true, data: resolved };

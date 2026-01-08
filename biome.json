@@ -19,6 +19,9 @@
         "noUnusedVariables": "error",
         "noUnusedImports": "error"
       },
+      "performance": {
+        "noDelete": "warn"
+      },
       "style": {
         "useConst": "error",
         "noNonNullAssertion": "warn"

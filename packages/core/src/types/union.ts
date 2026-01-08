@@ -1,19 +1,17 @@
-import type { ParseContext, ParseResult } from "../errors/types";
-import { BaseType } from "./base";
+import type { ParseContext, ParseResult } from '../errors/types';
+import { BaseType } from './base';
 
 /**
  * Infer output type from an array of schemas
  */
 // biome-ignore lint/suspicious/noExplicitAny: Required for type inference
-type InferUnion<T extends readonly BaseType<any>[]> = T[number]["_output"];
+type InferUnion<T extends readonly BaseType<any>[]> = T[number]['_output'];
 
 /**
  * Schema type for union validation (accepts any of the provided schemas)
  */
 // biome-ignore lint/suspicious/noExplicitAny: Required for type inference
-export class UnionType<T extends readonly BaseType<any>[]> extends BaseType<
-  InferUnion<T>
-> {
+export class UnionType<T extends readonly BaseType<any>[]> extends BaseType<InferUnion<T>> {
   readonly options: T;
 
   constructor(options: T) {
@@ -32,7 +30,7 @@ export class UnionType<T extends readonly BaseType<any>[]> extends BaseType<
 
     // None matched - return invalid_union error
     return this._createError(ctx, {
-      code: "invalid_union",
+      code: 'invalid_union',
     });
   }
 }
