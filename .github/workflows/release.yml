@@ -113,26 +113,10 @@ jobs:
           access: public
           registry: https://registry.npmjs.org
 
-      # Publish to GitHub Packages
-      - name: Setup Node.js for GitHub Packages
-        if: steps.publish_core.outputs.type || steps.publish_locale.outputs.type
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22.x
-          registry-url: "https://npm.pkg.github.com"
-          scope: "@schemini"
-
-      - name: Publish @schemini/core to GitHub Packages
-        if: steps.publish_core.outputs.type
-        run: npm publish ./schemini-core.tgz --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Publish @schemini/locale to GitHub Packages
-        if: steps.publish_locale.outputs.type
-        run: npm publish ./schemini-locale.tgz --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # Note: GitHub Packages publishing is disabled because the package scope
+      # (@schemini) doesn't match the GitHub owner (mechamogeo). To enable GitHub
+      # Packages, either create a GitHub org named "schemini" or rename packages
+      # to @mechamogeo/core and @mechamogeo/locale.
 
       # Create GitHub Release for @schemini/core
       - name: Create GitHub Release for @schemini/core
@@ -213,4 +197,4 @@ jobs:
             echo "- @schemini/locale@${{ steps.publish_locale.outputs.version }} (${{ steps.publish_locale.outputs.type }})" >> $GITHUB_STEP_SUMMARY
           fi
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "All packages published with npm provenance enabled and to GitHub Packages." >> $GITHUB_STEP_SUMMARY
+          echo "All packages published to npm with provenance enabled." >> $GITHUB_STEP_SUMMARY
