@@ -22,13 +22,13 @@ export interface Issue {
   code: IssueCode;
   path: (string | number)[];
   message: string;
-  expected?: string;
-  received?: string;
-  minimum?: number;
-  maximum?: number;
-  inclusive?: boolean;
-  exact?: boolean;
-  options?: string[];
+  expected?: string | undefined;
+  received?: string | undefined;
+  minimum?: number | undefined;
+  maximum?: number | undefined;
+  inclusive?: boolean | undefined;
+  exact?: boolean | undefined;
+  options?: string[] | undefined;
 }
 
 /**
@@ -40,7 +40,7 @@ export type ErrorMapFn = (issue: Issue) => string;
  * Options for custom error messages
  */
 export interface ErrorMessageOptions {
-  message?: string;
+  message?: string | undefined;
 }
 
 /**
@@ -55,5 +55,5 @@ export type ParseResult<T> =
  */
 export interface ParseContext {
   path: (string | number)[];
-  errorMap?: ErrorMapFn;
+  errorMap?: ErrorMapFn | undefined;
 }
