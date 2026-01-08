@@ -89,8 +89,8 @@ jobs:
         with:
           subject-path: ./schemini-locale.tgz
 
-      # Publish @schemini/core with provenance
-      - name: Publish @schemini/core
+      # Publish @schemini/core with provenance to npm
+      - name: Publish @schemini/core to npm
         id: publish_core
         if: steps.changesets.outputs.hasChangesets == 'false'
         uses: JS-DevTools/npm-publish@v3
@@ -99,9 +99,10 @@ jobs:
           package: ./packages/core
           provenance: true
           access: public
+          registry: https://registry.npmjs.org
 
-      # Publish @schemini/locale with provenance
-      - name: Publish @schemini/locale
+      # Publish @schemini/locale with provenance to npm
+      - name: Publish @schemini/locale to npm
         id: publish_locale
         if: steps.changesets.outputs.hasChangesets == 'false'
         uses: JS-DevTools/npm-publish@v3
@@ -110,10 +111,11 @@ jobs:
           package: ./packages/locale
           provenance: true
           access: public
+          registry: https://registry.npmjs.org
 
       # Publish to GitHub Packages
       - name: Setup Node.js for GitHub Packages
-        if: steps.changesets.outputs.hasChangesets == 'false'
+        if: steps.publish_core.outputs.type || steps.publish_locale.outputs.type
         uses: actions/setup-node@v4
         with:
           node-version: 22.x
@@ -122,13 +124,13 @@ jobs:
 
       - name: Publish @schemini/core to GitHub Packages
         if: steps.publish_core.outputs.type
-        run: npm publish ./packages/core --access public
+        run: npm publish ./schemini-core.tgz --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Publish @schemini/locale to GitHub Packages
         if: steps.publish_locale.outputs.type
-        run: npm publish ./packages/locale --access public
+        run: npm publish ./schemini-locale.tgz --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
