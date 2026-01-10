@@ -9,28 +9,33 @@ on:
       - main
   workflow_dispatch:
 
-concurrency: ${{ github.workflow }}-${{ github.ref }}
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
   release:
     name: Release
     runs-on: ubuntu-latest
-    # Only run if CI succeeded (or manual trigger)
-    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    # Only run if CI succeeded (or manual trigger) and not a skip ci commit
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' &&
+       !contains(github.event.workflow_run.head_commit.message, '[skip ci]'))
     permissions:
       contents: write
       pull-requests: write
-      packages: write # Required for GitHub Packages
-      id-token: write # Required for npm provenance
-      attestations: write # Required for GitHub attestations
+      packages: write
+      id-token: write
+      issues: write
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          # For workflow_run, checkout the branch that triggered CI
           ref: ${{ github.event.workflow_run.head_branch || github.ref }}
-          fetch-depth: 0 # Full history for changelog generation
+          fetch-depth: 0
+          persist-credentials: false
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
@@ -45,156 +50,66 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Audit package signatures
+        run: pnpm audit signatures
+
       - name: Build packages
-        run: pnpm --filter "@schemini/*" build
+        run: pnpm build
 
-      - name: Create Release Pull Request or Version Packages
-        id: changesets
-        uses: changesets/action@v1
-        with:
-          title: "chore: release packages"
-          commit: "chore: release packages"
-          # Don't publish here - we'll do it manually with provenance
-          publish: echo "Skipping automatic publish"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # Pack tarballs for attestation before publishing
-      - name: Pack @schemini/core
-        if: steps.changesets.outputs.hasChangesets == 'false'
+      - name: Check for releasable commits
+        id: check_commits
         run: |
-          cd packages/core
-          npm pack
-          mv *.tgz ../../schemini-core.tgz
+          # Get last release tag for any package
+          LAST_TAG=$(git describe --tags --abbrev=0 --match "@schemini/*" 2>/dev/null || echo "")
 
-      - name: Pack @schemini/locale
-        if: steps.changesets.outputs.hasChangesets == 'false'
-        run: |
-          cd packages/locale
-          npm pack
-          mv *.tgz ../../schemini-locale.tgz
-
-      # Generate GitHub attestations for the tarballs
-      - name: Attest @schemini/core
-        id: attest_core
-        if: steps.changesets.outputs.hasChangesets == 'false'
-        uses: actions/attest-build-provenance@v2
-        with:
-          subject-path: ./schemini-core.tgz
-
-      - name: Attest @schemini/locale
-        id: attest_locale
-        if: steps.changesets.outputs.hasChangesets == 'false'
-        uses: actions/attest-build-provenance@v2
-        with:
-          subject-path: ./schemini-locale.tgz
-
-      # Publish @schemini/core with provenance to npm
-      - name: Publish @schemini/core to npm
-        id: publish_core
-        if: steps.changesets.outputs.hasChangesets == 'false'
-        uses: JS-DevTools/npm-publish@v3
-        with:
-          token: ${{ secrets.NPM_TOKEN }}
-          package: ./packages/core
-          provenance: true
-          access: public
-          registry: https://registry.npmjs.org
-
-      # Publish @schemini/locale with provenance to npm
-      - name: Publish @schemini/locale to npm
-        id: publish_locale
-        if: steps.changesets.outputs.hasChangesets == 'false'
-        uses: JS-DevTools/npm-publish@v3
-        with:
-          token: ${{ secrets.NPM_TOKEN }}
-          package: ./packages/locale
-          provenance: true
-          access: public
-          registry: https://registry.npmjs.org
-
-      # Note: GitHub Packages publishing is disabled because the package scope
-      # (@schemini) doesn't match the GitHub owner (mechamogeo). To enable GitHub
-      # Packages, either create a GitHub org named "schemini" or rename packages
-      # to @mechamogeo/core and @mechamogeo/locale.
-
-      # Create GitHub Release for @schemini/core
-      - name: Create GitHub Release for @schemini/core
-        if: steps.publish_core.outputs.type
-        run: |
-          VERSION="${{ steps.publish_core.outputs.version }}"
-          TAG="@schemini/core@${VERSION}"
-
-          # Generate changelog
-          last_tag=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
-          if [ -n "$last_tag" ]; then
-            changelog=$(git log --pretty=format:"- %s (%h)" ${last_tag}..HEAD --no-merges | head -20)
-          else
-            changelog=$(git log --pretty=format:"- %s (%h)" --no-merges | head -20)
+          if [ -z "$LAST_TAG" ]; then
+            echo "No previous release tags found, will release"
+            echo "should_release=true" >> $GITHUB_OUTPUT
+            exit 0
           fi
 
-          # Rename tarball for release
-          TARBALL="schemini-core-${VERSION}.tgz"
-          cp schemini-core.tgz "$TARBALL"
+          # Check if there are any conventional commits since last tag
+          COMMITS=$(git log ${LAST_TAG}..HEAD --oneline --no-merges | grep -E "^[a-f0-9]+ (feat|fix|perf|refactor|docs|style|BREAKING)" || true)
 
-          # Create release with tarball
-          gh release create "$TAG" \
-            --title "$TAG" \
-            --notes "## What's Changed
+          if [ -n "$COMMITS" ]; then
+            echo "Found releasable commits:"
+            echo "$COMMITS"
+            echo "should_release=true" >> $GITHUB_OUTPUT
+          else
+            echo "No releasable commits found since $LAST_TAG"
+            echo "should_release=false" >> $GITHUB_OUTPUT
+          fi
 
-          ${changelog}
-
-          ## Verification
-
-          This release includes npm provenance attestations and GitHub attestations.
-          - [View attestations](https://github.com/${{ github.repository }}/attestations)
-          - [npm package](https://www.npmjs.com/package/@schemini/core/v/${VERSION})
-
-          **Full Changelog**: https://github.com/${{ github.repository }}/compare/${last_tag}...${TAG}" \
-            --target ${{ github.sha }} \
-            "$TARBALL" || echo "Release may already exist"
+      - name: Release @schemini/core
+        if: steps.check_commits.outputs.should_release == 'true'
+        run: pnpm exec semantic-release
+        working-directory: packages/core
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_CONFIG_PROVENANCE: true
 
-      # Create GitHub Release for @schemini/locale
-      - name: Create GitHub Release for @schemini/locale
-        if: steps.publish_locale.outputs.type
-        run: |
-          VERSION="${{ steps.publish_locale.outputs.version }}"
-          TAG="@schemini/locale@${VERSION}"
-
-          # Rename tarball for release
-          TARBALL="schemini-locale-${VERSION}.tgz"
-          cp schemini-locale.tgz "$TARBALL"
-
-          # Create release with tarball
-          gh release create "$TAG" \
-            --title "$TAG" \
-            --notes "## @schemini/locale v${VERSION}
-
-          Released alongside @schemini/core.
-
-          ## Verification
-
-          This release includes npm provenance attestations and GitHub attestations.
-          - [View attestations](https://github.com/${{ github.repository }}/attestations)
-          - [npm package](https://www.npmjs.com/package/@schemini/locale/v/${VERSION})
-          " \
-            --target ${{ github.sha }} \
-            "$TARBALL" || echo "Release may already exist"
+      - name: Release @schemini/locale
+        if: steps.check_commits.outputs.should_release == 'true'
+        run: pnpm exec semantic-release
+        working-directory: packages/locale
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_CONFIG_PROVENANCE: true
 
       - name: Summary
-        if: steps.publish_core.outputs.type || steps.publish_locale.outputs.type
+        if: steps.check_commits.outputs.should_release == 'true'
         run: |
-          echo "## Published Packages" >> $GITHUB_STEP_SUMMARY
+          echo "## Release Summary" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          if [ -n "${{ steps.publish_core.outputs.type }}" ]; then
-            echo "- @schemini/core@${{ steps.publish_core.outputs.version }} (${{ steps.publish_core.outputs.type }})" >> $GITHUB_STEP_SUMMARY
-          fi
-          if [ -n "${{ steps.publish_locale.outputs.type }}" ]; then
-            echo "- @schemini/locale@${{ steps.publish_locale.outputs.version }} (${{ steps.publish_locale.outputs.type }})" >> $GITHUB_STEP_SUMMARY
-          fi
+          echo "Semantic release completed for all packages." >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "All packages published to npm with provenance enabled." >> $GITHUB_STEP_SUMMARY
+          echo "Check the [Releases page](https://github.com/${{ github.repository }}/releases) for details." >> $GITHUB_STEP_SUMMARY
+
+      - name: No release needed
+        if: steps.check_commits.outputs.should_release == 'false'
+        run: |
+          echo "## No Release Needed" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "No releasable commits found since the last release." >> $GITHUB_STEP_SUMMARY

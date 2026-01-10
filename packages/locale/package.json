@@ -1,6 +1,6 @@
 {
   "name": "@schemini/locale",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "description": "Locale files for @schemini/core schema validation library",
   "type": "module",
   "main": "./dist/index.js",
@@ -65,7 +65,7 @@
     "tsup": "^8.5.1"
   },
   "peerDependencies": {
-    "@schemini/core": ">=1.0.0",
+    "@schemini/core": ">=0.0.1",
     "typescript": ">=5.0.0"
   },
   "peerDependenciesMeta": {

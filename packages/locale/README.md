@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="./assets/logo.svg" alt="schemini" height="66">
+</p>
+
 # @schemini/locale
 
 Internationalization (i18n) support for [@schemini/core](https://www.npmjs.com/package/@schemini/core).

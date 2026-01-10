@@ -1,6 +1,6 @@
 {
   "name": "@schemini/core",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "description": "TypeScript-first schema validation library with JSON Schema support",
   "type": "module",
   "main": "./dist/index.js",

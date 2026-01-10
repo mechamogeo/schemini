@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="./assets/logo.svg" alt="schemini" height="66">
+</p>
+
 # @schemini/core
 
 [![CI](https://github.com/mechamogeo/schemini/actions/workflows/ci.yml/badge.svg)](https://github.com/mechamogeo/schemini/actions/workflows/ci.yml)
