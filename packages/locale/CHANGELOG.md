@@ -1,3 +1,9 @@
+## [@schemini/locale-v1.1.0](https://github.com/mechamogeo/schemini/compare/@schemini/locale@1.0.0...@schemini/locale@1.1.0) (2026-01-10)
+
+### Features
+
+* set package versions to 1.0.0 for next release ([33d8c43](https://github.com/mechamogeo/schemini/commit/33d8c4312dcf04675c64b31898614981793d2026))
+
 # @schemini/locale
 
 ## 1.0.0
