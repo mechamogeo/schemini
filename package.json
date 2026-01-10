@@ -21,6 +21,7 @@
     "@biomejs/biome": "^1.9.4",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
+    "conventional-changelog-conventionalcommits": "^9.1.0",
     "semantic-release": "^24.2.9",
     "semantic-release-monorepo": "^8.0.2",
     "typescript": "^5.7.2"
