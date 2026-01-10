@@ -125,3 +125,4 @@ const schema = s.fromJsonSchema(jsonSchema);
 ## License
 
 MIT
+

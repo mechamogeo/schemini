@@ -77,3 +77,4 @@ MIT
 ## Documentation
 
 **[Full i18n documentation →](https://github.com/mechamogeo/schemini/wiki/Internationalization)**
+
